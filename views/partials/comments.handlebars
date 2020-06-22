@@ -1,0 +1,14 @@
+<div class="p-3">
+    {{#each this}}
+    <section class="m-2 border">
+        <div class="bg-success p-1 card">
+            <div class="text-white font-weight-bold">
+                {{user.username}} on {{format_date created_at}}
+            </div>
+            <div class="card-body bg-light">
+                {{comment_text}}
+            </div>
+        </div>
+    </section>
+    {{/each}}
+</div>
