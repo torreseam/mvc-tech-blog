@@ -1,14 +1,14 @@
+// THIS FILE will serve as a means to collect all of the API routes and package them up
+//dependancies from Post, User.js folders 
+
 const router = require('express').Router();
-const apiRoutes = require('./api');
-const homeRoutes = require('./home-routes');
-const dashRoutes = require('./dashboard-routes');
 
-router.use('/api', apiRoutes);
-router.use('/', homeRoutes);
-router.use('/dashboard', dashRoutes);
+const userRoutes = require('./user-routes');
+const postRoutes = require('./post-routes');
+const commentRoutes = require('./comment-routes');
 
-router.use((req, res) => {
-    res.status(404).end();
-});
+router.use('/users', userRoutes);
+router.use('/posts', postRoutes);
+router.use('/comments', commentRoutes);
 
 module.exports = router;

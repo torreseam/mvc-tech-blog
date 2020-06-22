@@ -1,0 +1,13 @@
+<article class="p-3">
+    <div class="p-2 card bg-success">
+        <div class="d-flex p-1 justify-content-between text-light">
+            <a href="/post/{{id}}" class="text-decoration-none text-light">
+                <h3>{{title}}</h3>
+            </a>
+            <h5>Posted by {{user.username}} on {{format_date created_at}}</h5>
+        </div>
+        <div class="border card-body bg-white p-3">
+            <p>{{contents}}</p>
+        </div>
+    </div>
+</article>

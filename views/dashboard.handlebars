@@ -1,0 +1,16 @@
+{{#if posts.length}}
+<section class="p-1 m-3">
+    <h2 class="text-center text-info border border-info p-2 rounded">Your Posts</h2>
+    <div>
+        {{#each posts as |post|}}
+        {{> post-info post}}
+        <a class="p-3 m-3 text-info" href="/dashboard/edit/{{post.id}}">&uarr; Edit Post</a>
+        {{/each}}
+    </div>
+</section>
+{{/if}}
+<div class="m-3">
+    <button class="btn btn-lg d-block mx-auto bg-secondary">
+        <a class="text-decoration-none text-white" href="/dashboard/add-post">+ Add Post</a>
+    </button>
+</div>

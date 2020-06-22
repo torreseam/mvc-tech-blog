@@ -1,30 +1,45 @@
 const router = require('express').Router();
-const { User, Post, Comment } = require('../models');
-const withAuth = require('../utils/auth');
+const { Comment } = require('../../models');
+const withAuth = require('../../utils/auth');
 
-router.get('/', withAuth, (req, res) => {
-    Post.findAll({
+router.get('/', (req, res) => {
+    Comment.findAll({})
+        .then(dbCommentData => res.json(dbCommentData))
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
+});
+
+router.post('/', withAuth, (req, res) => {
+    // check the session
+    if (req.session) {
+        Comment.create({
+            comment_text: req.body.comment_text,
+            post_id: req.body.post_id,
+            // use the id from the session
+            user_id: req.session.user_id,
+        })
+            .then(dbCommentData => res.json(dbCommentData))
+            .catch(err => {
+                console.log(err);
+                res.status(400).json(err);
+            });
+    }
+});
+
+router.delete('/:id', withAuth, (req, res) => {
+    Comment.destroy({
         where: {
-            user_id: req.session.user_id
-        },
-        attributes: ['id', 'title', 'contents', 'created_at'],
-        include: [
-            {
-                model: Comment,
-                attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
-                include: {
-                    model: User,
-                    attributes: ['username']
-                }
-            }
-        ]
+            id: req.params.id
+        }
     })
-        .then(dbPostData => {
-            const posts = dbPostData.map(post => post.get({ plain: true }));
-            res.render('dashboard', {
-                posts,
-                loggedIn: req.session.loggedIn
-            })
+        .then(dbCommentData => {
+            if (!dbCommentData) {
+                res.status(404).json({ message: 'No comment found with this id' });
+                return;
+            }
+            res.json(dbCommentData);
         })
         .catch(err => {
             console.log(err);
@@ -32,47 +47,4 @@ router.get('/', withAuth, (req, res) => {
         });
 });
 
-router.get('/edit/:id', withAuth, (req, res) => {
-    Post.findOne({
-        where: {
-            id: req.params.id
-        },
-        attributes: ['id', 'title', 'contents', 'created_at'],
-        include: [
-            {
-                model: Comment,
-                attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
-                include: {
-                    model: User,
-                    attributes: ['username']
-                }
-            },
-            {
-                model: User,
-                attributes: ['username']
-            }
-        ]
-    })
-        .then(dbPostData => {
-            if (!dbPostData) {
-                res.status(400).json({ message: 'No post found with this id!' });
-                return
-            }
-
-            const post = dbPostData.get({ plain: true });
-            res.render('edit-post', {
-                post,
-                loggedIn: true
-            });
-        });
-});
-
-router.get('/add-post', withAuth, (req, res) => {
-    if (req.session.loggedIn) {
-        res.render('add-post', {
-            loggedIn: true
-        });
-    }
-});
-
-module.exports = router
+module.exports = router;
