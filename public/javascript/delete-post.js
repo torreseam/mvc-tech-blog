@@ -5,6 +5,15 @@ async function deleteFormHandler(event) {
         window.location.toString().split('/').length - 1
     ];
 
+    //const resComment = await fetch(`/api/comments/`)
+    const resComment = await fetch(`/api/comments/${id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json());
+
     const response = await fetch(`/api/posts/${id}`, {
         method: 'DELETE',
         body: JSON.stringify({
